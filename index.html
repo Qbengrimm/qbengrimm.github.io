@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wspinaczkowy TWISTER</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Wspinaczkowy TWISTER</h1>
+
+        <!-- Sekcja Dodawania Kolorów -->
+        <section id="color-input">
+            <h2>Dodaj Kolory</h2>
+            <form id="color-form">
+                <input type="text" id="color" placeholder="Wprowadź kolor swoich chwytów" required>
+                <button type="submit">Dodaj</button>
+            </form>
+            <div id="color-list">
+                <h3>Kolory:</h3>
+                <ul id="colors"></ul>
+            </div>
+        </section>
+
+        <!-- Sekcja Kontrolek Gry -->
+        <section id="game-controls" class="hidden">
+            <h2>No to GRAMY!/h2>
+            <div class="action-buttons">
+            <button id="draw-button">Losuj</button>
+            <button id="end-button">Koniec</button>
+            </div>
+        </section>
+
+        <!-- Sekcja Wyników -->
+        <section id="results" class="hidden">
+            <h2>Wynik</h2>
+            <p id="current-draw"></p>
+            <h3>Historia Ruchów:</h3>
+            <ul id="move-history"></ul>
+            <h3>Łączna Liczba Ruchów:</h3>
+            <p id="total-moves"></p>
+            <div class="result-buttons">
+                <button id="play-again-button">Graj od nowa</button>
+                <button id="reset-button">Reset</button>
+            </div>
+        </section>
+
+        <!-- Sekcja Rozpoczęcia Gry -->
+        <section id="start-game" class="hidden">
+            <h2>Rozpocznij Grę</h2>
+            <button id="start-button">Start</button>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

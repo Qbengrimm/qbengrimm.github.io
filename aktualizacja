@@ -1,0 +1,13 @@
+-wprowadzanie kolorów
+-losowanie
+-koniec gry
+-rozpocznij od nowa
+-reset
+-podczas losowania wynik nie powtorzy sie 2 razy pod rzad
+-pierwsze losowanie - 4 kończyny jednocześnie
+-poprawione: po resecie czyszczona pamięć lokalna, strona się odświeża automatycznie.
+-wycentrowane przyciski "losuj" i "koniec"
+-kliknięcie w losuj przewija sekcje "kontrolki gry" na górę ekranu
+-po kliknięciu w "koniec" przewina do "Łącznej liczby ruchów"
+-zmiana nazwy gry na właściwą
+-tytuły nagłówków i przycisków
