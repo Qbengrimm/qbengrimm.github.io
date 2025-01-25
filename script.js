@@ -133,7 +133,7 @@ function updateCurrentDraw(assignments) {
     } else {
         let limb = Object.keys(assignments)[0];
         let color = assignments[limb];
-        currentDraw.innerHTML = ` /*Ostatni ruch*/ - ${limb}: ${color}`;
+        currentDraw.innerHTML = `${limb}: ${color}`;
     }
 }
 
