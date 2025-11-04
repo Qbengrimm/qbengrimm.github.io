@@ -1,22 +1,14 @@
-// Definicja kończyn
+// === ZMIENNE ===
 const limbOptions = ["Lewa ręka", "Prawa ręka", "Lewa noga", "Prawa noga"];
+let colors = [], moveCount = 0, isFirstDraw = true;
+let lastDraws = { "Lewa ręka":null, "Prawa ręka":null, "Lewa noga":null, "Prawa noga":null };
 
-// Inicjalizacja zmiennych gry
-let colors = [];
-let moveCount = 0;
-let moves = [];
-let isFirstDraw = true; // Flaga do sprawdzania, czy to pierwsze losowanie
-let lastDraws = {
-    "Lewa ręka": null,
-    "Prawa ręka": null,
-    "Lewa noga": null,
-    "Prawa noga": null
-};
-
-// Elementy DOM
+// === DOM ===
 const colorForm = document.getElementById('color-form');
 const colorInput = document.getElementById('color');
 const colorList = document.getElementById('colors');
+const startGameSection = document.getElementById('start-game');
+const startButton = document.getElementById('start-button');
 const gameControls = document.getElementById('game-controls');
 const drawButton = document.getElementById('draw-button');
 const endButton = document.getElementById('end-button');
@@ -24,251 +16,116 @@ const resultsSection = document.getElementById('results');
 const currentDraw = document.getElementById('current-draw');
 const moveHistory = document.getElementById('move-history');
 const totalMoves = document.getElementById('total-moves');
-const startGameSection = document.getElementById('start-game');
-const startButton = document.getElementById('start-button');
 const playAgainButton = document.getElementById('play-again-button');
 const resetButton = document.getElementById('reset-button');
 
-// Funkcja do kapitalizacji pierwszej litery
-function capitalizeFirstLetter(string) {
-    if (string.length === 0) return '';
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
+// === FUNKCJE ===
+function capitalizeFirstLetter(s) { return s ? s[0].toUpperCase() + s.slice(1) : ''; }
 
-// Funkcja losowania ruchu z zapobieganiem powtórzeniom
-function draw() {
-    if (colors.length === 0) {
-        alert("Proszę dodać co najmniej jeden kolor, zanim rozpoczniesz grę.");
-        return;
-    }
-
-    if (isFirstDraw) {
-        // Pierwsze losowanie: przypisanie koloru do każdej kończyny
-        let currentAssignments = {};
-        for (let limb of limbOptions) {
-            let newColor = getRandomColor(limb);
-            currentAssignments[limb] = newColor;
-            lastDraws[limb] = newColor;
-        }
-
-        // Uaktualnienie interfejsu
-        updateCurrentDraw(currentAssignments);
-        addMoveToHistory(currentAssignments);
-        moveCount++;
-
-        isFirstDraw = false;
-        return currentAssignments;
-    } else {
-        // Kolejne losowania: przypisanie koloru do jednej losowej kończyny
-        let randomLimb = limbOptions[Math.floor(Math.random() * limbOptions.length)];
-        let newColor = getRandomColor(randomLimb);
-
-        // Aktualizacja ostatniego przypisanego koloru dla danej kończyny
-        lastDraws[randomLimb] = newColor;
-
-        let assignment = {};
-        assignment[randomLimb] = newColor;
-
-        // Uaktualnienie interfejsu
-        updateCurrentDraw(assignment);
-        addMoveToHistory(assignment);
-        moveCount++;
-
-        return assignment;
-    }
-}
-
-// Funkcja generująca losowy kolor dla danej kończyny, unikając powtórzeń
 function getRandomColor(limb) {
-    if (colors.length === 1) {
-        // Jeśli jest tylko jeden kolor, zwróć go
-        return colors[0];
-    }
-
-    let newColor;
-    let attempts = 0;
-    const maxAttempts = 100; // Zapobiega nieskończonej pętli
-
-    do {
-        newColor = capitalizeFirstLetter(colors[Math.floor(Math.random() * colors.length)]);
-        attempts++;
-        if (attempts > maxAttempts) {
-            // Jeśli nie można znaleźć unikalnego koloru, zwróć aktualny
-            break;
-        }
-    } while (newColor === lastDraws[limb]);
-
-    return newColor;
+    if (colors.length === 1) return capitalizeFirstLetter(colors[0]);
+    let attempts = 0, color;
+    do { color = capitalizeFirstLetter(colors[Math.floor(Math.random()*colors.length)]);
+         attempts++;
+    } while (color === lastDraws[limb] && attempts < 50);
+    return color;
 }
 
-// Funkcja dodająca ruch do historii
-function addMoveToHistory(assignments) {
+function draw() {
+    if (!colors.length) return alert("Dodaj kolory!");
+    let assignment = {};
+
     if (isFirstDraw) {
-        // Dla pierwszego ruchu dodajemy kilka wpisów jako jeden ruch
-        let moveDescription = "Ruch " + moveCount + ":<br>";
-        for (let limb in assignments) {
-            moveDescription += `${limb} – ${assignments[limb]}<br>`;
-        }
-
-        const li = document.createElement('li');
-        li.innerHTML = moveDescription;
-        moveHistory.appendChild(li);
+        limbOptions.forEach(limb => {
+            let col = getRandomColor(limb);
+            assignment[limb] = col; lastDraws[limb] = col;
+        });
+        isFirstDraw = false;
     } else {
-        // Dla kolejnych ruchów pojedyncze wpisy
-        let moveDescription = `Ruch ${moveCount}: ${Object.keys(assignments)[0]} – ${Object.values(assignments)[0]}`;
-        const li = document.createElement('li');
-        li.textContent = moveDescription;
-        moveHistory.appendChild(li);
+        const limb = limbOptions[Math.floor(Math.random()*4)];
+        const col = getRandomColor(limb);
+        assignment[limb] = col; lastDraws[limb] = col;
     }
+
+    updateCurrentDraw(assignment);
+    addMoveToHistory(assignment);
+    moveCount++;
+    gameControls.scrollIntoView({ behavior: 'smooth' });
 }
 
-// Funkcja aktualizująca aktualny ruch na stronie
-function updateCurrentDraw(assignments) {
+function updateCurrentDraw(obj) {
+    let html = isFirstDraw ? "Start:<br>" : "Ruch:<br>";
+    for (let k in obj) html += `${k}: <b>${obj[k]}</b><br>`;
+    currentDraw.innerHTML = html;
+    currentDraw.classList.add('highlight');
+    setTimeout(() => currentDraw.classList.remove('highlight'), 1000);
+}
+
+function addMoveToHistory(obj) {
+    const li = document.createElement('li');
     if (isFirstDraw) {
-        let displayText = "Aktualne przypisania:<br>";
-        for (let limb in assignments) {
-            displayText += `${limb}: ${assignments[limb]}<br>`;
-        }
-        currentDraw.innerHTML = displayText;
+        let txt = "Ruch 1:<br>";
+        for (let k in obj) txt += `${k} – ${obj[k]}<br>`;
+        li.innerHTML = txt;
     } else {
-        let limb = Object.keys(assignments)[0];
-        let color = assignments[limb];
-        currentDraw.innerHTML = `${limb}: ${color}`;
+        const [limb] = Object.keys(obj);
+        li.textContent = `Ruch ${moveCount}: ${limb} – ${obj[limb]}`;
     }
+    moveHistory.appendChild(li);
 }
 
-// Funkcja zakończenia gry
-function endGame() {
-    return moveCount;
-}
-
-// Funkcja resetująca grę (bez usuwania dodanych kolorów)
-function resetGame() {
-    // Resetowanie zmiennych gry
-    moveCount = 0;
-    moves = [];
-    isFirstDraw = true;
-    for (let limb in lastDraws) {
-        lastDraws[limb] = null;
-    }
-
-    // Czyszczenie wyników na stronie
-    currentDraw.innerHTML = '';
-    moveHistory.innerHTML = '';
-    totalMoves.textContent = '';
-
-    // Wznawianie przycisków
-    drawButton.disabled = false;
-    endButton.disabled = false;
-
-    alert("Gra została zresetowana. Możesz rozpocząć nową grę.");
-}
-
-// Funkcja całkowicie resetująca aplikację (w tym kolory)
-function resetAll() {
-    if (!confirm("Czy na pewno chcesz zresetować aplikację? Stracisz wszystkie dodane kolory.")) {
-        return;
-    }
-
- // Usuwanie wszystkich danych z localStorage
-    localStorage.clear();
-
-    // Odświeżenie strony
-    location.reload();
-
-    // Resetowanie zmiennych gry
-    moveCount = 0;
-    moves = [];
-    colors = [];
-    isFirstDraw = true;
-    for (let limb in lastDraws) {
-        lastDraws[limb] = null;
-    }
-
-    // Czyszczenie listy kolorów na stronie
-    colorList.innerHTML = '';
-
-    // Ukrywanie i pokazywanie odpowiednich sekcji
-    gameControls.classList.add('hidden');
-    resultsSection.classList.add('hidden');
-    startGameSection.classList.add('hidden');
-
-    // Resetowanie wyników na stronie
-    currentDraw.innerHTML = '';
-    moveHistory.innerHTML = '';
-    totalMoves.textContent = '';
-
-    alert("Aplikacja została całkowicie zresetowana.");
-}
-
-// Obsługa dodawania kolorów
-colorForm.addEventListener('submit', function(e) {
+// === EVENTY ===
+colorForm.addEventListener('submit', e => {
     e.preventDefault();
-    const color = colorInput.value.trim().toLowerCase();
+    let c = colorInput.value.trim().toLowerCase();
+    if (!c) return alert("Wpisz kolor!");
+    if (colors.includes(c)) return alert("Już jest!");
+    if (colors.length >= 12) return alert("Max 12 kolorów!");
+    colors.push(c);
+    localStorage.setItem('colors', JSON.stringify(colors));
 
-    if (colors.length >= 12) {
-        alert("Osiągnięto maksymalną liczbę 12 kolorów.");
-        return;
-    }
+    const li = document.createElement('li');
+    li.textContent = capitalizeFirstLetter(c);
+    colorList.appendChild(li);
+    colorInput.value = '';
 
-    if (color && !colors.includes(color)) {
-        colors.push(color);
-        const li = document.createElement('li');
-        li.textContent = capitalizeFirstLetter(color);
-        colorList.appendChild(li);
-        colorInput.value = '';
-
-        // Sprawdzenie liczby kolorów i wyświetlenie sekcji startu gry
-        if (colors.length >= 2 && colors.length <= 12) {
-            startGameSection.classList.remove('hidden');
-        } else {
-            startGameSection.classList.add('hidden');
-        }
-    } else if (!color) {
-        alert("Proszę wprowadzić kolor.");
-    } else {
-        alert("Proszę wprowadzić unikalny kolor.");
-    }
+    if (colors.length >= 2) startGameSection.classList.remove('hidden');
 });
 
-// Obsługa startowania gry
-startButton.addEventListener('click', function() {
-    if (colors.length < 2 || colors.length > 12) {
-        alert("Proszę dodać od 2 do 12 kolorów.");
-        return;
-    }
+startButton.addEventListener('click', () => {
+    if (colors.length < 2) return alert("Minimum 2 kolory!");
     gameControls.classList.remove('hidden');
     resultsSection.classList.remove('hidden');
     startGameSection.classList.add('hidden');
 });
 
-// Obsługa losowania
-drawButton.addEventListener('click', function() {
-    const result = draw();
-    if (result) {
-        // Przewinięcie sekcji "Kontrolki Gry" na górę ekranu
-        gameControls.scrollIntoView({ behavior: 'smooth' });
+drawButton.addEventListener('click', draw);
+endButton.addEventListener('click', () => {
+    totalMoves.textContent = moveCount;
+    drawButton.disabled = endButton.disabled = true;
+    alert(`Koniec! Wykonałeś ${moveCount} ruchów!`);
+    totalMoves.scrollIntoView({behavior:'smooth'});
+});
+playAgainButton.addEventListener('click', () => location.reload());
+resetButton.addEventListener('click', () => {
+    if (confirm("Całkowity reset?")) { localStorage.clear(); location.reload(); }
+});
+
+// === MODAL ===
+const modal = document.getElementById('rules-modal');
+document.getElementById('open-rules').onclick = () => modal.style.display = 'block';
+document.querySelectorAll('.close, .close-btn').forEach(b => b.onclick = () => modal.style.display = 'none');
+window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
+
+// === LOAD KOLORY ===
+window.addEventListener('load', () => {
+    if (localStorage.getItem('colors')) {
+        colors = JSON.parse(localStorage.getItem('colors'));
+        colors.forEach(c => {
+            const li = document.createElement('li');
+            li.textContent = capitalizeFirstLetter(c);
+            colorList.appendChild(li);
+        });
+        if (colors.length >= 2) startGameSection.classList.remove('hidden');
     }
-});
-
-// Obsługa kończenia gry
-endButton.addEventListener('click', function() {
-    const finalMoves = endGame();
-    totalMoves.textContent = finalMoves;
-    drawButton.disabled = true;
-    endButton.disabled = true;
-    alert(`Gra zakończona! Wykonałeś ${finalMoves} ruchów.`);
-
-    // Przewinięcie do sekcji "Łączna liczba ruchów"
-    totalMoves.scrollIntoView({ behavior: 'smooth' });
-});
-
-// Obsługa przycisku "Graj od nowa"
-playAgainButton.addEventListener('click', function() {
-    resetGame();
-});
-
-// Obsługa przycisku "Reset"
-resetButton.addEventListener('click', function() {
-    resetAll();
 });
