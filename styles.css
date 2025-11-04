@@ -107,11 +107,40 @@ button:hover { background: #0056b3; }
 .hidden { display: none; }
 #current-draw { font-weight: bold; text-align: center; font-size: 1.2em; margin: 15px 0; }
 .highlight { background: #ffff99; transition: background 1s; }
-.ads-section { margin: 30px 0; text-align: center; }
+.pp-section { margin: 30px 0; text-align: center; }
 footer { text-align: center; margin-top: 30px; font-size: 0.9em; color: #666; }
 
 /* Responsywne przyciski górne */
 @media (max-width: 500px) {
     .rules-button-container { flex-direction: column; }
     .coffee-btn-mini { margin: 10px 0 0; width: 100%; }
+}
+
+/* === ŁADNY BANNER CENEO === */
+.pp-image {
+    max-width: 340px;
+    margin: 30px auto;
+    text-align: center;
+    background: #fff;
+    padding: 12px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+.pp-image:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+}
+.pp-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    display: block;
+}
+.ppimage-label {
+    margin: 12px 0 0;
+    font-size: 0.95em;
+    color: #555;
+    font-weight: 500;
 }
