@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Wspinaczkowy Twister – losuj kolory chwytów i śmiej się na ściance!">
     <title>Wspinaczkowy TWISTER</title>
+    <link rel="icon" href="climbing-twister-favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <h1>Wspinaczkowy TWISTER</h1>
+        <h1>🌀 Wspinaczkowy TWISTER ⛰️</h1>
         <!-- PRZYCISKI: Zasady + Kawa -->
         <div class="rules-button-container">
             <button id="open-rules" class="rules-btn">
@@ -23,28 +24,12 @@
             </a>
         </div>
         <!-- MODAL ZASADY -->
-        <div id="rules-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Zasady Wspinaczkowego TWISTERA</h2>
-                    <span class="close">×</span>
-                </div>
-                <div class="modal-body">
-                    <p>Gra dla 2+ osób na ściance wspinaczkowej. Celem jest wytrzymać jak najwięcej ruchów!</p>
-                    <ol>
-                        <li>Dodaj kolory chwytów (np. czerwony, niebieski).</li>
-                        <li>Kliknij <strong>Start</strong> – gra wylosuje kolor dla każdej kończyny.</li>
-                        <li>Jedna osoba czyta, reszta wspina się.</li>
-                        <li>Nie powtarzaj tego samego koloru na tej samej kończynie!</li>
-                        <li>Gdy ktoś spadnie → przegrywa!</li>
-                    </ol>
-                    <p><strong>Bezpieczeństwo:</strong> zawsze asekuracja i mata!</p>
-                </div>
-                <div class="modal-footer">
-                    <button class="close-btn">Zamknij</button>
-                </div>
-            </div>
-        </div>
+        <div id="rules-overlay" class="rules-overlay">
+    <div class="rules-container">
+        <button id="close-rules" class="close-rules-btn">✕</button>
+        <iframe id="rules-iframe" src="rules.html" frameborder="0"></iframe>
+    </div>
+</div>
         <!-- DODAJ KOLORY -->
         <section id="color-input">
             <h2>Dodaj Kolory</h2>
@@ -100,7 +85,7 @@
         </section>
     </div>
     <footer>
-        <p>© 2025 Jakub Staszewski • <a href="https://buycoffee.to/jstaszewski" target="_blank" rel="noopener noreferrer">buycoffee.to/jstaszewski</a></p>
+        <p>© 2025 Jakub Staszewski • <a href="https://buycoffee.to/jstaszewski" target="_blank">Postaw kawę</a></p>
     </footer>
     <script src="script.js"></script>
 </body>
