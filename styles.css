@@ -193,3 +193,13 @@ footer { text-align: center; margin-top: 30px; font-size: 0.9em; color: #666; }
     background: none;
     transform: scale(1.1);
 }
+
+/* MOBILNE: zasady na CAŁYM EKRANIE */
+@media (max-width: 768px) {
+    .rules-container {
+        width: 100vw !important;
+        height: 100vh !important;
+        max-width: none !important;
+        border-radius: 0 !important;
+    }
+}
