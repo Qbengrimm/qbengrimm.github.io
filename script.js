@@ -107,10 +107,25 @@ resetButton.addEventListener('click', () => {
     if (confirm("Całkowity reset?")) { localStorage.clear(); location.reload(); }
 });
 // === MODAL ===
-const modal = document.getElementById('rules-modal');
-document.getElementById('open-rules').onclick = () => modal.style.display = 'block';
-document.querySelectorAll('.close, .close-btn').forEach(b => b.onclick = () => modal.style.display = 'none');
-window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
+const rulesOverlay = document.getElementById('rules-overlay');
+const closeRulesBtn = document.getElementById('close-rules');
+
+document.getElementById('open-rules').onclick = () => {
+    rulesOverlay.classList.add('show');
+    document.body.style.overflow = 'hidden'; // blokuj scroll
+};
+
+closeRulesBtn.onclick = () => {
+    rulesOverlay.classList.remove('show');
+    document.body.style.overflow = '';
+};
+
+rulesOverlay.onclick = (e) => {
+    if (e.target === rulesOverlay) {
+        rulesOverlay.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+};
 // === LOAD KOLORY ===
 window.addEventListener('load', () => {
     if (localStorage.getItem('colors')) {
